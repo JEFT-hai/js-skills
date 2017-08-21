@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>preload</title>
+	<style>
+	    html,body{
+	    	height:100%;
+	    }
+		a{
+			text-decoration: none;
+		}
+		.box{
+			text-align: center;
+		}
+		.btn{
+			display: inline-block;
+			height:30px;
+			line-height: 30px;
+			text-align: center;
+			border:1px solid #ccc;
+			background-color: #fff;
+			padding:0 10px;
+			margin-right: 50px;
+			color: #333;
+		}
+		.btn:hover{
+			background-color: #eee;
+		}
+		.loading{
+			position: fixed;
+			height:100%;
+			width:100%;
+			top:0;
+			left: 0;
+			z-index: 2;
+			background-color: #ccc;
+			text-align: center;
+		}
+		.progress{
+			position: absolute;
+			top:50%;
+			left: 50%;
+			margin-top:-10px;
+			margin-left: -10px;
+			font-size: 24px;
+		}
+	</style>
+</head>
+<body>
+<div class="box">
+	<img src="http://i2.hoopchina.com.cn/user/308/15960308/13383588090.jpg" id="img" alt="" width="1200">
+	<p>
+	    <a href="javascript:;" class="btn" data-control="prev">上一页</a>
+	    <a href="javascript:;" class="btn" data-control="next">下一页</a>
+	</p>
+</div>
+<div class="loading">
+	<p class="progress">0%</p>
+</div>
+
+  <script src="../js/jquery.js"></script>
+  <script src="../js/preload.js"></script>
+  <script>
+    
+  	var imgs=[
+
+		'http://i2.hoopchina.com.cn/user/308/15960308/13383588090.jpg',
+
+		'http://img.article.pchome.net/00/44/23/20/pic_lib/wm/2.jpg',
+
+		'http://lcd.yesky.com/imagelist/2009/044/404q4y8g4m0p.jpg',
+
+		'http://lcd.yesky.com/imagelist/2009/044/cgro54wt2t2x.jpg'
+
+	];
+
+	var index=0,
+        len=imgs.length,
+        $progress = $('.progress');
+        
+    $.preload(imgs,{
+    	each:function(count){
+    		$progress.html(Math.round((count + 1)/len *100) + '%');
+    	},
+    	all:function(){
+                $('.loading').hide();
+    			document.title = '1/' + len;
+    	}
+    })
+
+    // $.each(imgs,function(i,src){
+    // 	var imgObj = new Image();
+
+    // 	$(imgObj).on('load error',function(){
+    // 		$progress.html(Math.round((count + 1)/len *100) + '%');
+
+    // 		if(count >= (len -1)){
+    // 			$('.loading').hide();
+    // 			document.title = '1/' + len;
+    // 		}
+
+    // 		count++;
+    // 	});
+
+    // 	imgObj.src = src;
+    // })
+
+	$('.btn').on('click',function(){
+		if($(this).data('control') == 'prev'){
+			index = Math.max(0,--index);
+		}else {
+			index = Math.min(len - 1,++index);
+		}
+
+		document.title = (index + 1) + '/' + len;
+		$('#img').attr('src',imgs[index]);
+	});
+  </script>
+</body>
+</html>
